@@ -16,14 +16,22 @@ ENTRY = (
 LIMIT = 200
 
 
+def count_chars(text: str) -> int:
+    """Characters as Unicode code points, not UTF-16 units or bytes."""
+    return len(text)
+
+
 def main() -> None:
-    assert 1 <= len(ENTRY) <= LIMIT, f"entry is {len(ENTRY)} chars, limit {LIMIT}"
+    assert "\n" not in ENTRY and "\r" not in ENTRY, "entry must be a single line"
+    assert 1 <= count_chars(ENTRY) <= LIMIT, (
+        f"entry is {count_chars(ENTRY)} chars, limit {LIMIT}"
+    )
     assert ENTRY.strip() == ENTRY and ENTRY.strip(), "entry must be non-blank"
     out_dir = os.environ.get("OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
         f.write(ENTRY)
-    print(f"wrote {len(ENTRY)} characters to {out_dir}/entry.txt")
+    print(f"wrote {count_chars(ENTRY)} characters to {out_dir}/entry.txt")
 
 
 if __name__ == "__main__":
